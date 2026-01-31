@@ -1,0 +1,52 @@
+name: Auto Deploy CI/CD
+
+on:
+  push:
+    branches:
+      - dev
+      - main
+
+jobs:
+  deploy-dev:
+    if: github.ref == 'refs/heads/dev'
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    
+    - name: Deploy to DEV
+      uses: appleboy/ssh-action@v0.1.5
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ${{ secrets.EC2_USER }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        script: |
+          echo "🚀 Deploying DEV..."
+          cd /home/ubuntu/app/dev
+          git pull origin dev
+          pip3 install -r requirements.txt
+          sudo systemctl restart flask-dev
+          echo "✅ DEV deployed on port 4000"
+
+  deploy-live:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    
+    - name: Deploy to LIVE
+      uses: appleboy/ssh-action@v0.1.5
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ${{ secrets.EC2_USER }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        script: |
+          echo "🚀 Deploying LIVE..."
+          cd /home/ubuntu/app/live
+          git pull origin main
+          pip3 install -r requirements.txt
+          sudo systemctl restart flask-live
+          echo "✅ LIVE deployed on port 5000"
