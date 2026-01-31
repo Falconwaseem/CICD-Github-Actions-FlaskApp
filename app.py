@@ -8,8 +8,8 @@ PORT = int(os.getenv("APP_PORT", 4000))
 @app.route("/")
 def home():
     if ENVIRONMENT == "live":
-        return f"Welcome to Live Environment! FIRST TEST Version deployed on live: {os.getenv('VERSION', '1.0')}"
-    return f"Welcome to Dev Environment final test: {os.getenv('VERSION', '1.0')}"
+        return f"Welcome to Live Environment! [FINAL DEMO] Version: {os.getenv('VERSION', '1.0')}"
+    return f"Welcome to Dev Environment! last check: {os.getenv('VERSION', '1.0')}"
 
 @app.route("/health")
 def health():
