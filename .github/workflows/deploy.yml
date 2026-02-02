@@ -29,9 +29,9 @@ jobs:
     
     - name: Run tests
       run: |
-        echo "🔍 Running CI tests..."
-        python -c "from app import app; print('✅ App imports successfully')"
-        echo "🎉 All CI tests passed!"
+        echo " Running CI tests..."
+        python -c "from app import app; print(' App imports successfully')"
+        echo " All CI tests passed!"
 
   # CD: Deploy to Dev environment
   deploy-dev:
@@ -49,14 +49,14 @@ jobs:
         username: ${{ secrets.EC2_USER }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
-          echo "🚀 Starting DEV deployment (Port 4000)..."
+          echo " Starting DEV deployment (Port 4000)..."
           cd /home/ubuntu/app/dev
           git fetch origin
           git reset --hard origin/dev
           source venv/bin/activate
           pip install -r requirements.txt
           sudo systemctl restart flask-dev
-          echo "✅ DEV deployment completed!"
+          echo " DEV deployment completed!"
           sleep 3
           curl -f http://localhost:4000/health || echo "Health check failed"
 
@@ -76,13 +76,13 @@ jobs:
         username: ${{ secrets.EC2_USER }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
-          echo "🚀 Starting LIVE deployment (Port 5000)..."
+          echo " Starting LIVE deployment (Port 5000)..."
           cd /home/ubuntu/app/live
           git fetch origin
           git reset --hard origin/main
           source venv/bin/activate
           pip install -r requirements.txt
           sudo systemctl restart flask-live
-          echo "✅ LIVE deployment completed!"
+          echo " LIVE deployment completed!"
           sleep 3
           curl -f http://localhost:5000/health || echo "Health check failed"
