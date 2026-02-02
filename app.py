@@ -17,7 +17,7 @@ def home():
 
         return "Welcome to Live"
 
-    return "Welcome to Dev ENV testing ci"
+    return "Welcome to Dev this is new update"
 
 if __name__ == "__main__":
 
