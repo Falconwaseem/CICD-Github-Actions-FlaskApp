@@ -15,7 +15,7 @@ def home():
 
     if ENVIRONMENT == "live":
 
-        return "Welcome to Live"
+        return "Welcome to Live this is deployment is done on live"
 
     return "Welcome to Dev"
 
