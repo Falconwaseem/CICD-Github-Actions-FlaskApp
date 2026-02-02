@@ -15,9 +15,9 @@ def home():
 
     if ENVIRONMENT == "live":
 
-        return "Welcome to Live this is deployment is done on live"
+        return "Welcome to Live this is new update"
 
-    return "Welcome to Dev"
+    return "Welcome to Dev this is new update"
 
 if __name__ == "__main__":
 
