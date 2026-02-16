@@ -3,86 +3,65 @@ name: CI/CD Pipeline
 on:
   pull_request:
     branches: [dev, main]
+
   push:
     branches:
       - dev
       - main
 
 jobs:
-  # CI: Run tests on Pull Request
-  ci-tests:
+
+  # CI Job (Only on Pull Request)
+  ci:
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
-    
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
-    
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.9'
-    
-    - name: Install dependencies
-      run: |
-        pip install -r requirements.txt
-    
-    - name: Run tests
-      run: |
-        echo " Running CI tests..."
-        python -c "from app import app; print(' App imports successfully')"
-        echo " All CI tests passed!"
 
-  # CD: Deploy to Dev environment
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+
+      - name: Install Dependencies
+        run: pip install -r requirements.txt
+
+      - name: Test App Import
+        run: python -c "from app import app; print('App imports successfully')"
+
+  # Deploy to DEV (Port 4000)
   deploy-dev:
     if: github.event_name == 'push' && github.ref == 'refs/heads/dev'
     runs-on: ubuntu-latest
-    
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
-    
-    - name: Deploy to DEV Server
-      uses: appleboy/ssh-action@v0.1.5
-      with:
-        host: ${{ secrets.EC2_HOST }}
-        username: ${{ secrets.EC2_USER }}
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
-        script: |
-          echo " Starting DEV deployment (Port 4000)..."
-          cd /home/ubuntu/app/dev
-          git fetch origin
-          git reset --hard origin/dev
-          source venv/bin/activate
-          pip install -r requirements.txt
-          sudo systemctl restart flask-dev
-          echo " DEV deployment completed!"
-          sleep 3
-          curl -f http://localhost:4000/health || echo "Health check failed"
 
-  # CD: Deploy to Live environment
+    steps:
+      - name: Deploy to DEV Server
+        uses: appleboy/ssh-action@v0.1.5
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            cd /home/ubuntu/YOUR_REPO
+            git fetch origin
+            git reset --hard origin/dev
+            sudo systemctl restart flask-dev
+
+  # Deploy to LIVE (Port 5000)
   deploy-live:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
-    
+
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
-    
-    - name: Deploy to LIVE Server
-      uses: appleboy/ssh-action@v0.1.5
-      with:
-        host: ${{ secrets.EC2_HOST }}
-        username: ${{ secrets.EC2_USER }}
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
-        script: |
-          echo " Starting LIVE deployment (Port 5000)..."
-          cd /home/ubuntu/app/live
-          git fetch origin
-          git reset --hard origin/main
-          source venv/bin/activate
-          pip install -r requirements.txt
-          sudo systemctl restart flask-live
-          echo " LIVE deployment completed!"
-          sleep 3
-          curl -f http://localhost:5000/health || echo "Health check failed"
+      - name: Deploy to LIVE Server
+        uses: appleboy/ssh-action@v0.1.5
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            cd /home/ubuntu/YOUR_REPO
+            git fetch origin
+            git reset --hard origin/main
+            sudo systemctl restart flask-live
