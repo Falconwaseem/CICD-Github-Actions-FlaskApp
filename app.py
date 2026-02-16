@@ -17,7 +17,7 @@ def home():
 
         return "Welcome to Live this is deployment is done on live"
 
-    return "Welcome to Dev this is new update"
+    return "Welcome to Dev .new update testing here"
 
 if __name__ == "__main__":
 
