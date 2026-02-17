@@ -43,7 +43,7 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cd /home/ubuntu/YOUR_REPO
+            cd /home/ubuntu/CICD-Github-Actions-FlaskApp
             git fetch origin
             git reset --hard origin/dev
             sudo systemctl restart flask-dev
@@ -61,7 +61,7 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cd /home/ubuntu/YOUR_REPO
+            cd /home/ubuntu/CICD-Github-Actions-FlaskApp
             git fetch origin
             git reset --hard origin/main
             sudo systemctl restart flask-live
